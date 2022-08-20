@@ -24,7 +24,7 @@ export const sortByFieldDESC =
     current[fieldName].toLowerCase() < next[fieldName].toLowerCase() ? 1 : -1;
 
 export const checkSubstring = (str: string, substr: string): boolean => {
-  if (str.toLowerCase().indexOf(substr) + 1) {
+  if (str.toLowerCase().indexOf(substr.toLowerCase()) + 1) {
     return true;
   }
   return false;
