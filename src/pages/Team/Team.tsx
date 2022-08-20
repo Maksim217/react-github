@@ -11,13 +11,6 @@ import {
   Grid,
   Typography,
   TextField,
-  List,
-  ListItem,
-  ListItemText,
-  ListItemAvatar,
-  Avatar,
-  Divider,
-  Button,
 } from '@material-ui/core';
 import {
   fetchUsers,
@@ -26,11 +19,9 @@ import {
   sortTeam,
 } from '../../store/reducers/team/ActionCreators';
 import { Alert, Skeleton } from '@material-ui/lab';
-import { PageTitle } from '../../components';
+import { PageTitle, UserList } from '../../components';
 import { SortButton } from '../../components/UI';
-import { IProfile } from '../../models/IProfile';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
-import { checkSubstring } from '../../utils/utils';
 import { Reducer } from '../../const';
 import useStyles from './styles';
 
@@ -50,8 +41,13 @@ const Team: FC<IPropsPage> = ({ title }): React.ReactElement => {
   }, []);
 
   const toTeam = useCallback(
-    (user: IProfile) => (): void => dispatch(addToTeam(user)),
-    [],
+    (id: number) => (): void => { 
+      const user = users.find(u => u.id === id);
+      if(user) {
+        dispatch(addToTeam(user));
+      }
+    },
+    [users],
   );
 
   const deleteFromTeam = useCallback(
@@ -67,87 +63,6 @@ const Team: FC<IPropsPage> = ({ title }): React.ReactElement => {
 
   const search = (event: React.ChangeEvent<HTMLInputElement>): void =>
     setSearchUsers(event.target.value);
-
-  const renderInfoBlock = (text: string): React.ReactElement => (
-    <ListItem>
-      <ListItemText
-        classes={{
-          primary: classes.listItemTextPrimary,
-        }}
-        primary={text}
-      />
-    </ListItem>
-  );
-
-  const renderUserItem = (
-    user: IProfile,
-    btnLabel: string,
-    btnHandler: () => void,
-  ): React.ReactElement => {
-    return (
-      <>
-        <ListItem>
-          <ListItemAvatar>
-            <Avatar src={user.avatar_url} />
-          </ListItemAvatar>
-          <ListItemText
-            classes={{
-              primary: classes.listItemText,
-              secondary: classes.listItemText,
-            }}
-            primary={user.login}
-          />
-          {!user.is_member_team ? (
-            <Button className={classes.btn} onClick={btnHandler}>
-              {btnLabel}
-            </Button>
-          ) : (
-            <Typography>УЖЕ В КОМАНДЕ</Typography>
-          )}
-        </ListItem>
-        <Divider />
-      </>
-    );
-  };
-
-  const renderTeamList = (): React.ReactElement[] | React.ReactElement => {
-    if (requested && !team.length) {
-      return renderInfoBlock('СПИСОК КОМАНДЫ ПУСТ');
-    }
-
-    return team.map((user) => {
-      return (
-        <div key={user.id}>
-          {renderUserItem(user, 'удалить', deleteFromTeam(user.id))}
-        </div>
-      );
-    });
-  };
-
-  const renderUserList = (): React.ReactElement[] | React.ReactElement => {
-    if (requested && !users.length) {
-      return renderInfoBlock('СПИСОК ПОЛЬЗОВАТЕЛЕЙ ПУСТ');
-    }
-
-    return users.map((user) => {
-      if (deferredText) {
-        if (checkSubstring(user.login, deferredText)) {
-          return (
-            <div key={user.id}>
-              {renderUserItem(user, 'в команду', toTeam(user))}
-            </div>
-          );
-        }
-        return <div key={user.id}></div>;
-      } else {
-        return (
-          <div key={user.id}>
-            {renderUserItem(user, 'в команду', toTeam(user))}
-          </div>
-        );
-      }
-    });
-  };
 
   if (error) {
     return (
@@ -183,7 +98,12 @@ const Team: FC<IPropsPage> = ({ title }): React.ReactElement => {
               </Grid>
             </Grid>
             <Grid className={classes.listContainer}>
-              <List className={classes.list}>{renderTeamList()}</List>
+              <UserList
+                users={team}
+                messageText="СПИСОК КОМАНДЫ ПУСТ"
+                btnLabel="удалить"
+                userHandler={deleteFromTeam}
+              />
             </Grid>
           </Paper>
         </Grid>
@@ -205,7 +125,13 @@ const Team: FC<IPropsPage> = ({ title }): React.ReactElement => {
               </Grid>
             </Grid>
             <Grid className={classes.listContainer}>
-              <List className={classes.list}>{renderUserList()}</List>
+              <UserList
+                users={users}
+                messageText="СПИСОК ПОЛЬЗОВАТЕЛЕЙ ПУСТ"
+                deferredText={deferredText}
+                btnLabel="в команду"
+                userHandler={toTeam}
+              />
             </Grid>
           </Paper>
         </Grid>

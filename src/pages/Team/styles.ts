@@ -36,9 +36,6 @@ export default makeStyles((theme) => ({
     width: '100%',
     overflowY: 'scroll',
   },
-  list: {
-    width: '100%',
-  },
   userHeader: {
     padding: 16,
     borderBottom: '2px solid gray',
@@ -51,8 +48,9 @@ export default makeStyles((theme) => ({
   userHeaderSearch: {
     width: '100%',
   },
-  listItemTextPrimary: {
-    textAlign: 'center',
+  secondaryLink: {
+    textDecoration: 'none',
+    color: 'rgba(0, 0, 0, 0.6)',
   },
   [theme.breakpoints.down('sm')]: {
     container: {
