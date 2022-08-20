@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { Grid, Typography, Paper, Avatar } from '@material-ui/core';
-import { IProfile } from '../../models/IProfile';
+import { IProfile } from '../../../models/IProfile';
 import useStyles from './styles';
 
 interface IPropsFollowing {
