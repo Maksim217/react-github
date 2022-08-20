@@ -1,8 +1,8 @@
 import React, { FC } from 'react';
 import { Grid, Typography, Button, Divider, Paper } from '@material-ui/core';
-import { IRepo } from '../../models/IRepo';
-import { useCopyToClipboard } from '../../hooks/clipboard';
-import { parseDate } from '../../utils/utils';
+import { IRepo } from '../../../models/IRepo';
+import { useCopyToClipboard } from '../../../hooks/clipboard';
+import { parseDate } from '../../../utils/utils';
 import useStyles from './styles';
 
 interface IPropsRepo {
